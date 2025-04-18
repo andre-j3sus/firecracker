@@ -1270,6 +1270,10 @@ definitions:
         description: Network host device names to override
         items:
           $ref: "#/definitions/NetworkOverride"
+      container_snapshot_path:
+        type: string
+        description:
+          Path to the disk device backing the disk state at the time of the snapshot creation.
 
 
   TokenBucket:

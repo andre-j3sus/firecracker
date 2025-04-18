@@ -72,6 +72,8 @@ pub struct LoadSnapshotParams {
     pub resume_vm: bool,
     /// The network devices to override on load.
     pub network_overrides: Vec<NetworkOverride>,
+    /// Path to the disk device backing the container snapshot.
+    pub container_snapshot_path: Option<String>,
 }
 
 /// Stores the configuration for loading a snapshot that is provided by the user.
@@ -97,6 +99,9 @@ pub struct LoadSnapshotConfig {
     /// The network devices to override on load.
     #[serde(default)]
     pub network_overrides: Vec<NetworkOverride>,
+    /// Path to the disk device backing the container snapshot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub container_snapshot_path: Option<String>,
 }
 
 /// Stores the configuration used for managing snapshot memory.

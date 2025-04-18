@@ -369,6 +369,24 @@ pub fn restore_from_snapshot(
         })
         .map_err(BuildMicrovmFromSnapshotError::VmUpdateConfig)?;
 
+    if let Some(container_snapshot_path) = &params.container_snapshot_path {
+        // We assume that each microVM is backed by exactly one container image
+        // snapshot device (i.e., that no more than one container is run on each microVM).
+        assert_eq!(microvm_state.device_states.block_devices.len(), 2);
+        for i in 0..2 {
+            // We assume that one of the block devices is the rootfs, the other being the
+            // container image snapshot.
+            let disk_path = &microvm_state.device_states.block_devices[i]
+                .device_state
+                .disk_path;
+            if disk_path.contains("snap") || disk_path.contains("ctrstub") {
+                microvm_state.device_states.block_devices[i]
+                    .device_state
+                    .disk_path = container_snapshot_path.clone();
+            }
+        }
+    }
+
     // Some sanity checks before building the microvm.
     snapshot_state_sanity_check(&microvm_state)?;
 
